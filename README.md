@@ -39,7 +39,7 @@ $ = cheerio.load("<table id='complex'> \
     </table>");
 
 cheerioTableparser($);
-var data = $("#complex").parsetable(true, true, true);
+var data = $("#complex").parsetable({dupCols: true, dupRows: true, textMode: true});
 //data = >
 //[ [ 'A', '1a', '1a', '1a', '1a', '1a' ],
 //  [ 'B', '2a', '2b', '2b', '2d', '2d' ],
@@ -77,10 +77,11 @@ data = $("table").parsetable();
 // data = > []
 ```
 
-### .parsetable(dupCols, dupRows, textMode)
-- `dupCols`: if true empty cells will be copy of left filled column. If false empty cell. Default: false.
-- `dupRows`: if true empty cells will be copy of upper filled row. If false empty cell. Default: false.
-- `textMode `: if true result will be text same as cell $("td").text().trim(). If false result will be HTML same as cell $("td").html(). Default: false.
+### .parsetable(options, [cellIterator])
+- `options.dupCols`: if true empty cells will be copy of left filled column. If false empty cell. Default: false.
+- `options.dupRows`: if true empty cells will be copy of upper filled row. If false empty cell. Default: false.
+- `options.textMode `: if true result will be text same as cell $("td").text().trim(). If false result will be HTML same as cell $("td").html(). Default: false.
+- `cellIterator(ref, cell)`: iterator function called on each cell. `ref` is an object with `row` and `col` index of the cell. `cell` is the cheerio element that cell.
 
 #### Load data and add plugin
 ```js
@@ -101,7 +102,7 @@ cheerioTableparser($);
 
 #### Default usage no copy
 ```js
-var data = $("#complex").parsetable(); // same as .parsetable(false, false, false);
+var data = $("#complex").parsetable(); // same as .parsetable({dupCols: false, dupRows: false, textMode: false});
 //data = >
 //[ [ 'A', '1a', '', '', '', '' ],
 //  [ 'B', '2a', '2b', '', '2d', '' ],
@@ -113,7 +114,7 @@ var data = $("#complex").parsetable(); // same as .parsetable(false, false, fals
 #### Copy data ONLY from UPPER row with filled cell
 
 ```js
-var data = $("#complex").parsetable(false, true, false);
+var data = $("#complex").parsetable({dupCols: false, dupRows: true, textMode: false});
 //data = >
 //[ [ 'A', '1a', '1a', '1a', '1a', '1a' ],
 //  [ 'B', '2a', '2b', '2b', '2d', '2d' ],
@@ -125,7 +126,7 @@ var data = $("#complex").parsetable(false, true, false);
 #### Copy data ONLY from LEFT column with filled cell
 
 ```js
-var data = $("#complex").parsetable(true, false, false);
+var data = $("#complex").parsetable({dupCols: true, dupRows: false, textMode: false});
 //data = >
 //[ [ 'A', '1a', '', '', '', '' ],
 //  [ 'B', '2a', '2b', '', '2d', '' ],
@@ -137,7 +138,7 @@ var data = $("#complex").parsetable(true, false, false);
 #### Copy data BOTH from LEFT column AND UPPER row with filled cell
 
 ```js
-var data = $("#complex").parsetable(true, true, false);
+var data = $("#complex").parsetable({dupCols: true, dupRows: true, textMode: false});
 //data = >
 //[ [ 'A', '1a', '1a', '1a', '1a', '1a' ],
 //  [ 'B', '2a', '2b', '2b', '2d', '2d' ],
@@ -170,7 +171,7 @@ cheerioTableparser($);
 
 #### Return data as HTML
 ```js
-var data = $("#html").parsetable(false, false, false);
+var data = $("#html").parsetable({dupCols: false, dupRows: false, textMode: false});
 //data = >
 //[ [ '<strong>A</strong>', '<div class="table-text">1a</div>' ],
 //  [ '<strong>B</strong>', '<div class="table-text">2a</div>' ] ]
@@ -189,7 +190,7 @@ var tableText = $('<div>' + data[0][1] + '</div>').find('.table-text').text();
 
 #### Return data as Text
 ```js
-var data = $("#html").parsetable(false, false, true);
+var data = $("#html").parsetable({dupCols: false, dupRows: false, textMode: true});
 //data = >
 //[ [ 'A', '1a' ],
 //  [ 'B', '2a' ] ]
