@@ -23,15 +23,11 @@ module.exports = function ($) {
       currY = 0
       $('td, th', row).each(function (colIdx, col) {
         var cell = $(col)
-        var rowspan = cell.attr('rowspan') || 1
-        var colspan = cell.attr('colspan') || 1
+        var rowspan = parseInt(cell.attr('rowspan') || '1')
+        var colspan = parseInt(cell.attr('colspan') || '1')
         var content = options.textMode === true
-            ? cell.text().trim() || ''
-            : cell.html() || ''
-
-        if (cellIterator) {
-          cellIterator({ row: rowIdx, col: colIdx }, cell)
-        }
+          ? cell.text().trim() || ''
+          : cell.html() || ''
 
         var x = 0
         var y = 0
@@ -50,6 +46,9 @@ module.exports = function ($) {
 
             if ((x === 0 || options.dupRows) && (y === 0 || options.dupCols)) {
               columns[currY + y][currX + x] = content
+              if (cellIterator) {
+                cellIterator({ row: currX + x, col: currY + y }, cell)
+              }
             } else {
               columns[currY + y][currX + x] = ''
             }
